@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About — Lung Disease Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>About This Project</h1>
+        </header>
+
+        <div class="card about-card">
+            <h2>Lung Diseases Prediction Using Machine Learning</h2>
+            <p><strong>Subject Code:</strong> BIT-753 (Major Project)</p>
+            <p><strong>College:</strong> Galgotias College of Engineering & Technology</p>
+            <p><strong>Department:</strong> Information Technology</p>
+            <p><strong>Guide:</strong> Mrs. Shanu Verma</p>
+
+            <h3>Team Members</h3>
+            <ul>
+                <li>Kanhaiya Kumar Sahani (2300970130067)</li>
+                <li>Anurag Kumar Ojha (2300970130027)</li>
+                <li>Asad Khan (2300970130033)</li>
+            </ul>
+
+            <h3>Technology Stack</h3>
+            <ul>
+                <li><strong>Model:</strong> VGG16 (Transfer Learning)</li>
+                <li><strong>Framework:</strong> TensorFlow 2.15</li>
+                <li><strong>Backend:</strong> Flask</li>
+                <li><strong>Dataset:</strong> Kaggle Chest X-Ray Pneumonia (5,863 images)</li>
+            </ul>
+
+            <h3>How It Works</h3>
+            <p>This application uses a deep learning model based on VGG16 architecture, trained on thousands of chest X-ray images. When you upload an X-ray, the model analyzes it and predicts whether the lung appears normal or shows signs of pneumonia, along with a confidence percentage.</p>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="btn-primary btn-back">Back to Home</a>
+
+        <footer>
+            <p class="disclaimer">This tool is for educational purposes only and should not be used as a substitute for professional medical advice.</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lung Disease Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Lung Disease Prediction</h1>
+            <p class="subtitle">Upload a Chest X-Ray for AI-Powered Analysis</p>
+        </header>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <div class="flash-messages">
+            {% for message in messages %}
+            <div class="flash-error">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <div class="card">
+            <form action="{{ url_for('predict') }}" method="POST" enctype="multipart/form-data" id="upload-form">
+                <div class="upload-area" id="drop-zone">
+                    <div class="upload-icon">
+                        <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#1a73e8" stroke-width="1.5">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>
+                    </div>
+                    <p class="upload-text">Drag & drop your X-ray image here</p>
+                    <p class="upload-subtext">or</p>
+                    <label class="file-label">
+                        Browse Files
+                        <input type="file" name="file" id="file-input" accept=".png,.jpg,.jpeg" hidden>
+                    </label>
+                    <p class="upload-hint">Supports: PNG, JPG, JPEG (Max 16MB)</p>
+                </div>
+
+                <div class="preview-container" id="preview-container" style="display:none;">
+                    <img id="image-preview" src="" alt="Preview">
+                    <p id="file-name"></p>
+                </div>
+
+                <button type="submit" class="btn-primary" id="submit-btn" disabled>
+                    <span id="btn-text">Analyze X-Ray</span>
+                    <span id="btn-spinner" class="spinner" style="display:none;"></span>
+                </button>
+            </form>
+        </div>
+
+        <footer>
+            <p>Built by Kanhaiya Kumar Sahani, Anurag Kumar Ojha & Asad Khan</p>
+            <p>Galgotias College of Engineering & Technology | Department of IT</p>
+            <p class="disclaimer">This tool is for educational purposes only and should not be used as a substitute for professional medical advice.</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
