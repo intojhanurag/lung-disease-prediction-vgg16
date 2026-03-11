@@ -14,42 +14,77 @@
             <p class="subtitle">Analysis Result</p>
         </header>
 
-        <div class="result-wrapper">
+        <!-- Prediction Result Card -->
+        <div class="result-card {% if prediction == 'NORMAL' %}result-normal{% else %}result-pneumonia{% endif %}">
+            {% if prediction == 'NORMAL' %}
+            <div class="result-icon">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2.5">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                    <polyline points="22 4 12 14.01 9 11.01"/>
+                </svg>
+            </div>
+            <h2 class="result-label normal-text">NORMAL</h2>
+            <p class="result-desc">No signs of pneumonia detected in this X-ray.</p>
+            {% else %}
+            <div class="result-icon">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2.5">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                    <line x1="12" y1="9" x2="12" y2="13"/>
+                    <line x1="12" y1="17" x2="12.01" y2="17"/>
+                </svg>
+            </div>
+            <h2 class="result-label pneumonia-text">PNEUMONIA DETECTED</h2>
+            <p class="result-desc">Signs of pneumonia have been detected in this X-ray.</p>
+            {% endif %}
+
+            <div class="confidence-section">
+                <p class="confidence-label">Confidence</p>
+                <p class="confidence-value">{{ confidence }}%</p>
+                <div class="confidence-bar">
+                    <div class="confidence-fill {% if prediction == 'NORMAL' %}fill-normal{% else %}fill-pneumonia{% endif %}" style="width: {{ confidence }}%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- X-Ray Images: Original + Grad-CAM Side by Side -->
+        <div class="images-comparison">
             <div class="xray-display">
-                <h2>Uploaded X-Ray</h2>
+                <h3>Original X-Ray</h3>
                 <img src="{{ image_url }}" alt="Uploaded X-Ray" class="xray-image">
             </div>
+            <div class="xray-display gradcam-display">
+                <h3>AI Attention Map (Grad-CAM)</h3>
+                <img src="{{ gradcam_url }}" alt="Grad-CAM Heatmap" class="xray-image">
+                <p class="gradcam-hint">Red/yellow regions = areas the model focused on for its prediction</p>
+            </div>
+        </div>
 
-            <div class="result-card {% if prediction == 'NORMAL' %}result-normal{% else %}result-pneumonia{% endif %}">
-                {% if prediction == 'NORMAL' %}
-                <div class="result-icon">
-                    <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#4caf50" stroke-width="2.5">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <polyline points="22 4 12 14.01 9 11.01"/>
-                    </svg>
+        <!-- Explanation -->
+        <div class="card explanation-card">
+            <h3>How to Read the Heatmap</h3>
+            <div class="heatmap-legend">
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #ff0000;"></span>
+                    <span>Red — High attention (model strongly focused here)</span>
                 </div>
-                <h2 class="result-label normal-text">NORMAL</h2>
-                <p class="result-desc">No signs of pneumonia detected.</p>
-                {% else %}
-                <div class="result-icon">
-                    <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="#f44336" stroke-width="2.5">
-                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-                        <line x1="12" y1="9" x2="12" y2="13"/>
-                        <line x1="12" y1="17" x2="12.01" y2="17"/>
-                    </svg>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #ffff00;"></span>
+                    <span>Yellow — Moderate attention</span>
                 </div>
-                <h2 class="result-label pneumonia-text">PNEUMONIA DETECTED</h2>
-                <p class="result-desc">Signs of pneumonia have been detected in this X-ray.</p>
-                {% endif %}
-
-                <div class="confidence-section">
-                    <p class="confidence-label">Confidence</p>
-                    <p class="confidence-value">{{ confidence }}%</p>
-                    <div class="confidence-bar">
-                        <div class="confidence-fill {% if prediction == 'NORMAL' %}fill-normal{% else %}fill-pneumonia{% endif %}" style="width: {{ confidence }}%;"></div>
-                    </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #00ff00;"></span>
+                    <span>Green — Low attention</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color" style="background: #0000ff;"></span>
+                    <span>Blue — Minimal attention (model ignored this region)</span>
                 </div>
             </div>
+            {% if prediction == 'PNEUMONIA' %}
+            <p class="explanation-text">The red/yellow areas indicate regions where the model detected patterns consistent with pneumonia, such as opacities or consolidations in the lung fields.</p>
+            {% else %}
+            <p class="explanation-text">The heatmap shows relatively even attention across the lung fields, with no concentrated areas suggesting abnormalities.</p>
+            {% endif %}
         </div>
 
         <a href="{{ url_for('index') }}" class="btn-primary btn-back">Upload Another Image</a>

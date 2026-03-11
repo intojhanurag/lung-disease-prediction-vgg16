@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 import tensorflow as tf
 from config import MODEL_PATH, UPLOAD_FOLDER, MAX_CONTENT_LENGTH, ALLOWED_EXTENSIONS
 from predict import predict_pneumonia
+from gradcam import generate_gradcam
 
 app = Flask(__name__)
 app.secret_key = "lung-disease-prediction-secret-key"
@@ -52,14 +53,20 @@ def predict():
     # Run prediction
     class_label, confidence = predict_pneumonia(filepath, model)
 
-    # Pass image path relative to static folder for display
+    # Generate Grad-CAM heatmap
+    gradcam_path = generate_gradcam(filepath, model)
+    gradcam_filename = os.path.basename(gradcam_path)
+
+    # Pass image paths relative to static folder for display
     image_url = url_for("static", filename=f"uploads/{filename}")
+    gradcam_url = url_for("static", filename=f"uploads/{gradcam_filename}")
 
     return render_template(
         "result.html",
         prediction=class_label,
         confidence=confidence,
         image_url=image_url,
+        gradcam_url=gradcam_url,
     )
 
 
