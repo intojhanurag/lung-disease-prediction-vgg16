@@ -7,6 +7,7 @@ Built using **VGG16 transfer learning** on the Kaggle Chest X-Ray Pneumonia data
 ---
 
 ## Demo
+![alt text](<Screenshot 2026-03-11 203410.png>)
 
 | Upload Screen | Normal Result | Pneumonia Result |
 |:---:|:---:|:---:|
