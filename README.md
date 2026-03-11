@@ -1,3 +1,12 @@
+---
+title: Lung Disease Prediction
+emoji: 🫁
+colorFrom: blue
+colorTo: red
+sdk: docker
+pinned: false
+---
+
 # Lung Disease Prediction Using Machine Learning
 
 A deep learning-powered web application that analyzes chest X-ray images to predict whether a patient's lungs are **Normal** or show signs of **Pneumonia** — with real-time confidence scoring.
