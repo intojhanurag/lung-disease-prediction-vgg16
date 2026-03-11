@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 from werkzeug.utils import secure_filename
 import tensorflow as tf
@@ -18,6 +19,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 print("Loading model...")
 model = tf.keras.models.load_model(MODEL_PATH)
 print("Model loaded successfully!")
+
+# Store recent predictions (last 20)
+prediction_history = []
 
 
 def allowed_file(filename):
@@ -61,6 +65,18 @@ def predict():
     image_url = url_for("static", filename=f"uploads/{filename}")
     gradcam_url = url_for("static", filename=f"uploads/{gradcam_filename}")
 
+    # Save to history
+    prediction_history.insert(0, {
+        "filename": filename,
+        "prediction": class_label,
+        "confidence": confidence,
+        "image_url": image_url,
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+    })
+    # Keep only last 20
+    if len(prediction_history) > 20:
+        prediction_history.pop()
+
     return render_template(
         "result.html",
         prediction=class_label,
@@ -68,6 +84,23 @@ def predict():
         image_url=image_url,
         gradcam_url=gradcam_url,
     )
+
+
+@app.route("/history")
+def history():
+    return render_template("history.html", history=prediction_history)
+
+
+@app.route("/history/clear", methods=["POST"])
+def clear_history():
+    prediction_history.clear()
+    flash("Prediction history cleared.")
+    return redirect(url_for("history"))
+
+
+@app.route("/performance")
+def performance():
+    return render_template("performance.html")
 
 
 @app.route("/about")

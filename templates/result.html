@@ -14,6 +14,13 @@
             <p class="subtitle">Analysis Result</p>
         </header>
 
+        <nav class="nav-links">
+            <a href="{{ url_for('index') }}" class="nav-link">Upload</a>
+            <a href="{{ url_for('history') }}" class="nav-link">History</a>
+            <a href="{{ url_for('performance') }}" class="nav-link">Model Performance</a>
+            <a href="{{ url_for('about') }}" class="nav-link">About</a>
+        </nav>
+
         <!-- Prediction Result Card -->
         <div class="result-card {% if prediction == 'NORMAL' %}result-normal{% else %}result-pneumonia{% endif %}">
             {% if prediction == 'NORMAL' %}

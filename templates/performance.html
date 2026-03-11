@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Performance — Lung Disease Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Lung Disease Prediction</h1>
+            <p class="subtitle">Model Performance Dashboard</p>
+        </header>
+
+        <nav class="nav-links">
+            <a href="{{ url_for('index') }}" class="nav-link">Upload</a>
+            <a href="{{ url_for('history') }}" class="nav-link">History</a>
+            <a href="{{ url_for('performance') }}" class="nav-link active">Model Performance</a>
+            <a href="{{ url_for('about') }}" class="nav-link">About</a>
+        </nav>
+
+        <!-- Model Details -->
+        <div class="card">
+            <h2 class="section-title">Model Architecture</h2>
+            <div class="architecture-flow">
+                <div class="arch-block">Input Image<br><small>224 x 224 x 3</small></div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-block arch-vgg">VGG16 Base<br><small>13 Conv Layers (Frozen)</small></div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-block">GAP</div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-block">Dense(512)<br><small>ReLU</small></div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-block">Dropout<br><small>50%</small></div>
+                <div class="arch-arrow">&rarr;</div>
+                <div class="arch-block arch-output">Dense(1)<br><small>Sigmoid</small></div>
+            </div>
+            <table class="stats-table">
+                <tr><th>Property</th><th>Value</th></tr>
+                <tr><td>Base Model</td><td>VGG16 (ImageNet Pretrained)</td></tr>
+                <tr><td>Total Parameters</td><td>14,977,857</td></tr>
+                <tr><td>Trainable Parameters</td><td>263,169</td></tr>
+                <tr><td>Non-Trainable Parameters</td><td>14,714,688</td></tr>
+                <tr><td>Input Shape</td><td>224 x 224 x 3 (RGB)</td></tr>
+                <tr><td>Output</td><td>Binary (Normal / Pneumonia)</td></tr>
+                <tr><td>Model File Size</td><td>~60 MB</td></tr>
+            </table>
+        </div>
+
+        <!-- Training Configuration -->
+        <div class="card">
+            <h2 class="section-title">Training Configuration</h2>
+            <div class="config-grid">
+                <div class="config-item">
+                    <span class="config-label">Optimizer</span>
+                    <span class="config-value">Adam</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Learning Rate</span>
+                    <span class="config-value">0.0001</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Loss Function</span>
+                    <span class="config-value">Binary Cross-Entropy</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Batch Size</span>
+                    <span class="config-value">32</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Epochs</span>
+                    <span class="config-value">20 (with Early Stopping)</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Validation Split</span>
+                    <span class="config-value">15% from training data</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Class Balancing</span>
+                    <span class="config-value">Computed Class Weights</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Training Platform</span>
+                    <span class="config-value">Google Colab (T4 GPU)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dataset Details -->
+        <div class="card">
+            <h2 class="section-title">Dataset Distribution</h2>
+            <p class="dataset-source">Source: Kaggle Chest X-Ray Pneumonia Dataset (Paul Mooney) — Guangzhou Women and Children's Medical Center</p>
+            <table class="stats-table">
+                <tr><th>Split</th><th>Normal</th><th>Pneumonia</th><th>Total</th></tr>
+                <tr><td>Training (85%)</td><td>1,140</td><td>3,294</td><td>4,434</td></tr>
+                <tr><td>Validation (15%)</td><td>201</td><td>581</td><td>782</td></tr>
+                <tr><td>Testing</td><td>234</td><td>390</td><td>624</td></tr>
+                <tr class="total-row"><td><strong>Total</strong></td><td><strong>1,575</strong></td><td><strong>4,265</strong></td><td><strong>5,840</strong></td></tr>
+            </table>
+            <div class="dataset-bar">
+                <div class="bar-normal" style="width: 27%;">
+                    <span>Normal (27%)</span>
+                </div>
+                <div class="bar-pneumonia" style="width: 73%;">
+                    <span>Pneumonia (73%)</span>
+                </div>
+            </div>
+            <p class="dataset-note">Dataset is imbalanced — handled using computed class weights during training.</p>
+        </div>
+
+        <!-- Data Augmentation -->
+        <div class="card">
+            <h2 class="section-title">Data Augmentation (Training Only)</h2>
+            <div class="config-grid">
+                <div class="config-item">
+                    <span class="config-label">Rotation</span>
+                    <span class="config-value">±20°</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Width Shift</span>
+                    <span class="config-value">±10%</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Height Shift</span>
+                    <span class="config-value">±10%</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Shear</span>
+                    <span class="config-value">±10%</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Zoom</span>
+                    <span class="config-value">±15%</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Horizontal Flip</span>
+                    <span class="config-value">Yes</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Rescaling</span>
+                    <span class="config-value">1/255</span>
+                </div>
+                <div class="config-item">
+                    <span class="config-label">Fill Mode</span>
+                    <span class="config-value">Nearest</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confusion Matrix & Training History -->
+        <div class="plots-grid">
+            <div class="card plot-card">
+                <h2 class="section-title">Confusion Matrix</h2>
+                <img src="{{ url_for('static', filename='confusion_matrix.png') }}" alt="Confusion Matrix" class="plot-image">
+            </div>
+            <div class="card plot-card">
+                <h2 class="section-title">Training History</h2>
+                <img src="{{ url_for('static', filename='training_history.png') }}" alt="Training History" class="plot-image">
+            </div>
+        </div>
+
+        <!-- Callbacks -->
+        <div class="card">
+            <h2 class="section-title">Training Callbacks</h2>
+            <div class="callbacks-list">
+                <div class="callback-item">
+                    <h4>EarlyStopping</h4>
+                    <p>Monitors val_loss, patience=5, restores best weights. Prevents overfitting by stopping training when validation loss stops improving.</p>
+                </div>
+                <div class="callback-item">
+                    <h4>ReduceLROnPlateau</h4>
+                    <p>Monitors val_loss, factor=0.5, patience=3, min_lr=1e-7. Reduces learning rate by half when validation loss plateaus.</p>
+                </div>
+                <div class="callback-item">
+                    <h4>ModelCheckpoint</h4>
+                    <p>Monitors val_accuracy, saves best model only. Ensures the final model is the one with highest validation accuracy.</p>
+                </div>
+            </div>
+        </div>
+
+        <a href="{{ url_for('index') }}" class="btn-primary btn-back">Back to Home</a>
+
+        <footer>
+            <p class="disclaimer">This tool is for educational purposes only and should not be used as a substitute for professional medical advice.</p>
+        </footer>
+    </div>
+</body>
+</html>
