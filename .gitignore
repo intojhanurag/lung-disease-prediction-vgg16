@@ -1,5 +1,4 @@
 data/
-model/*.keras
 model/*.h5
 static/uploads/*
 __pycache__/
