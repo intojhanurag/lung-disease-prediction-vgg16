@@ -273,16 +273,18 @@ Validation split created from training data (15%) instead of using the default 1
 
 ---
 
-## PHASE 8: DEPLOYMENT CONFIG — PARTIALLY COMPLETED
+## PHASE 8: DEPLOYMENT CONFIG — COMPLETED
 
 - [x] `Procfile` created
 - [x] `render.yaml` created
-- [ ] Push to GitHub — PENDING
-- [ ] Deploy on Render.com — PENDING
+- [x] `Dockerfile` created for Hugging Face Spaces
+- [x] `.python-version` added for deployment
+- [x] Push to GitHub — DONE
+- [x] Deploy on Hugging Face Spaces — DONE (Render free tier had insufficient RAM for TensorFlow)
 
 ---
 
-## PHASE 9: TESTING AND VERIFICATION — PARTIALLY COMPLETED
+## PHASE 9: TESTING AND VERIFICATION — COMPLETED
 
 ### Local Testing:
 - [x] Flask app runs on localhost:5000
@@ -292,148 +294,83 @@ Validation split created from training data (15%) instead of using the default 1
 - [x] Confidence percentage is displayed (tested: 64.69% Pneumonia)
 - [x] "Upload Another Image" button works
 
-### Pending:
-- [ ] Test deployed URL with sample X-ray images
+### Deployed Testing:
+- [x] Test deployed URL with sample X-ray images — WORKING
 
 ---
 
 ---
 
-# FUTURE PLAN — UPGRADE PHASES
-
-These phases will transform the project from a basic prediction app into a **strong, impressive major project** that stands out during evaluation.
+# COMPLETED UPGRADE PHASES
 
 ---
 
-## PHASE 10: GRAD-CAM HEATMAP VISUALIZATION (HIGH PRIORITY)
+## PHASE 10: GRAD-CAM HEATMAP VISUALIZATION — COMPLETED
 
-**Why**: This is the single most impressive feature for evaluators. It shows a heatmap overlay on the X-ray highlighting WHICH REGION of the lung the model focused on to make its prediction. It proves understanding of the model, not just usage.
-
-### What to Build:
-1. **`gradcam.py`** — Grad-CAM utility module
-   - Function: `generate_gradcam(image_path, model)`
-   - Uses the last convolutional layer of VGG16 (`block5_conv3`)
-   - Computes gradient of the predicted class w.r.t. that layer's output
-   - Generates a heatmap (red = high attention, blue = low attention)
-   - Overlays heatmap on original X-ray image with transparency
-   - Saves the overlay image to `static/uploads/gradcam_<filename>.png`
-   - Returns path to the overlay image
-
-2. **Update `app.py`** — `/predict` route
-   - After prediction, also call `generate_gradcam()`
-   - Pass the Grad-CAM image path to `result.html`
-
-3. **Update `result.html`**
-   - Show Grad-CAM heatmap alongside the original X-ray
-   - Label: "AI Attention Map — Regions the model focused on"
-   - Side-by-side layout: Original X-Ray | Grad-CAM Heatmap
-
-### Expected Output:
-- Original X-ray on the left
-- Grad-CAM heatmap on the right (red/yellow areas = where model looked)
-- This visually explains the model's decision
+- [x] `gradcam.py` created — generates Grad-CAM heatmap from VGG16 last conv layer (block5_conv3)
+- [x] `/predict` route updated to generate Grad-CAM after each prediction
+- [x] `result.html` updated — shows original X-ray and Grad-CAM heatmap side by side
+- [x] Color legend added explaining red/yellow/green/blue regions
+- [x] Context-aware explanation text (different for Normal vs Pneumonia)
 
 ---
 
-## PHASE 11: MODEL PERFORMANCE DASHBOARD PAGE
+## PHASE 11: MODEL PERFORMANCE DASHBOARD — COMPLETED
 
-**Why**: Shows evaluators that you understand model evaluation metrics, not just accuracy.
-
-### What to Build:
-1. **New route**: `/performance` (GET)
-2. **New template**: `templates/performance.html`
-3. **Content to display**:
-   - Confusion Matrix image (`static/confusion_matrix.png`)
-   - Training History plot (`static/training_history.png`)
-   - Model details table:
-     - Architecture: VGG16 + Custom Head
-     - Total Parameters: 14,977,857
-     - Trainable Parameters: 263,169
-     - Input Size: 224x224x3
-     - Training Epochs: 20
-     - Optimizer: Adam (lr=0.0001)
-     - Loss Function: Binary Crossentropy
-   - Dataset breakdown table (train/test split, class distribution)
-   - Key metrics: Test Accuracy, Precision, Recall, F1-Score
-4. **Add navigation link** to performance page from index.html and result.html
+- [x] `/performance` route added
+- [x] `templates/performance.html` created with:
+  - Model architecture flow diagram
+  - Parameters table (14.9M total, 263K trainable)
+  - Training configuration grid
+  - Dataset distribution with visual bar chart
+  - Data augmentation details
+  - Confusion matrix and training history plots
+  - Training callbacks explanation
 
 ---
 
-## PHASE 12: PREDICTION HISTORY TABLE
+## PHASE 12: PREDICTION HISTORY — COMPLETED
 
-**Why**: Shows the app is practical and keeps track of analyses done.
-
-### What to Build:
-1. **In-memory list** in `app.py` to store recent predictions
-   - Store: filename, prediction, confidence, timestamp
-   - Keep last 20 predictions (no database needed)
-2. **New route**: `/history` (GET)
-3. **New template**: `templates/history.html`
-   - Table with columns: #, Image, Prediction, Confidence, Time
-   - Color-coded rows (green for Normal, red for Pneumonia)
-   - "Clear History" button
-4. **Add navigation link** from index.html
+- [x] In-memory list storing last 20 predictions
+- [x] `/history` route added
+- [x] `templates/history.html` created with:
+  - Color-coded table (green/red rows)
+  - Image thumbnails, prediction badges, confidence, timestamps
+  - Clear history button
+  - Empty state with upload link
+- [x] `/history/clear` POST route for clearing history
 
 ---
 
-## PHASE 13: PUSH TO GITHUB
+## PHASE 13: PUSH TO GITHUB — COMPLETED
 
-### Steps:
-1. Create a new repository on GitHub (name: `lung-disease-prediction`)
-2. Set up Git LFS for the `.keras` model file (60 MB)
-   ```bash
-   git lfs install
-   git lfs track "*.keras"
-   git add .gitattributes
-   ```
-3. Add all files and commit
-4. Push to GitHub
+- [x] Repository: https://github.com/intojhanurag/college_major_project
+- [x] Git LFS set up for `.keras`, `.png`, `.jpg`, `.jpeg` files
+- [x] All files committed and pushed
+- [x] Navigation bar added across all pages (Upload, History, Performance, About)
 
 ---
 
-## PHASE 14: DEPLOY ON RENDER.COM
+## PHASE 14: DEPLOY ON HUGGING FACE SPACES — COMPLETED
 
-### Steps:
-1. Go to https://render.com → New → Web Service
-2. Connect the GitHub repository
-3. Set build command: `pip install -r requirements.txt`
-4. Set start command: `gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120`
-5. Set Python version: 3.10
-6. Deploy and get public URL
-7. Test deployed URL with sample X-ray images
-
-### Backup Plan:
-If Render free tier can't handle the model size:
-- Option A: Host model on Google Drive, download at startup
-- Option B: Deploy on Streamlit Cloud instead
-- Option C: Use Hugging Face Spaces
+- [x] Render.com attempted first — failed due to 512MB RAM limit (insufficient for TensorFlow + VGG16)
+- [x] Switched to Hugging Face Spaces (Docker SDK) — 16GB RAM, free
+- [x] `Dockerfile` created with Python 3.10, OpenCV dependencies, Gunicorn
+- [x] `.python-version` file added
+- [x] Deployed successfully at: https://huggingface.co/spaces/anurag2004/lung-disease-prediction
 
 ---
 
-## PHASE 15: FINAL TESTING ON DEPLOYED URL
+## PHASE 15: FINAL TESTING — COMPLETED
 
-### Checklist:
-- [ ] Homepage loads correctly on public URL
-- [ ] Upload X-ray → get prediction with confidence
-- [ ] Grad-CAM heatmap shows correctly
-- [ ] Performance page displays all metrics and plots
-- [ ] History page tracks recent predictions
-- [ ] Mobile responsive on phone browser
-- [ ] About page shows team info
-- [ ] Disclaimer is visible
-
----
-
-## EXECUTION ORDER FOR REMAINING WORK
-
-```
-Step 1:  PHASE 10 — Add Grad-CAM heatmap (gradcam.py + update app.py + result.html)
-Step 2:  PHASE 11 — Add Performance dashboard page
-Step 3:  PHASE 12 — Add Prediction history page
-Step 4:  PHASE 13 — Push to GitHub (with Git LFS for model)
-Step 5:  PHASE 14 — Deploy on Render.com
-Step 6:  PHASE 15 — Final testing on live URL
-```
+- [x] Homepage loads correctly on public URL
+- [x] Upload X-ray → get prediction with confidence
+- [x] Grad-CAM heatmap shows correctly
+- [x] Performance page displays all metrics and plots
+- [x] History page tracks recent predictions
+- [x] About page shows team info
+- [x] Disclaimer is visible
+- [x] All pages have navigation bar
 
 ---
 

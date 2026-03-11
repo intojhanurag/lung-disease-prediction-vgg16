@@ -27,8 +27,11 @@ Built using **VGG16 transfer learning** on the Kaggle Chest X-Ray Pneumonia data
 ## Key Features
 
 - **AI-Powered Diagnosis** — VGG16 deep learning model with ~90% test accuracy
+- **Grad-CAM Heatmap** — Visual explainability showing which lung regions the AI focused on
 - **Real-Time Prediction** — Upload an X-ray and get results in seconds
 - **Confidence Score** — Shows prediction confidence as a percentage with visual bar
+- **Model Performance Dashboard** — View confusion matrix, training curves, and model architecture
+- **Prediction History** — Track and review recent analyses
 - **Drag & Drop Upload** — Modern UI with image preview before analysis
 - **Mobile Responsive** — Works on desktop, tablet, and mobile browsers
 - **Class-Balanced Training** — Handles dataset imbalance using computed class weights
@@ -90,10 +93,12 @@ VGG16 (ImageNet pretrained, frozen) → GlobalAveragePooling2D → Dense(512, Re
 ├── app.py                  # Flask web application
 ├── train.py                # Model training script
 ├── predict.py              # Prediction utility function
+├── gradcam.py              # Grad-CAM heatmap generation
 ├── config.py               # Hyperparameters and paths
 ├── requirements.txt        # Python dependencies
-├── Procfile                # Render deployment config
-├── render.yaml             # Render service config
+├── Dockerfile              # Hugging Face Spaces deployment
+├── Procfile                # Gunicorn config
+├── render.yaml             # Render config (backup)
 ├── model/
 │   └── vgg16_pneumonia.keras   # Trained model (60 MB)
 ├── static/
@@ -104,7 +109,9 @@ VGG16 (ImageNet pretrained, frozen) → GlobalAveragePooling2D → Dense(512, Re
 │   └── training_history.png    # Accuracy/loss curves
 ├── templates/
 │   ├── index.html              # Upload page
-│   ├── result.html             # Prediction result page
+│   ├── result.html             # Prediction result + Grad-CAM page
+│   ├── performance.html        # Model performance dashboard
+│   ├── history.html            # Prediction history page
 │   └── about.html              # Project info page
 ├── notebooks/
 │   └── training.ipynb          # Google Colab training notebook
@@ -122,7 +129,7 @@ VGG16 (ImageNet pretrained, frozen) → GlobalAveragePooling2D → Dense(512, Re
 | Image Processing | OpenCV |
 | Web Framework | Flask |
 | Frontend | HTML, CSS, JavaScript (vanilla) |
-| Deployment | Render.com / Gunicorn |
+| Deployment | Hugging Face Spaces (Docker) / Gunicorn |
 | Training Platform | Google Colab (GPU) |
 
 ---
@@ -137,8 +144,8 @@ VGG16 (ImageNet pretrained, frozen) → GlobalAveragePooling2D → Dense(512, Re
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/lung-disease-prediction.git
-cd lung-disease-prediction
+git clone https://github.com/intojhanurag/lung-disease-prediction-vgg16.git
+cd lung-disease-prediction-vgg16
 
 # Create virtual environment
 python3 -m venv venv
@@ -176,7 +183,10 @@ Training is done on **Google Colab** for free GPU access:
 | Route | Method | Description |
 |-------|--------|-------------|
 | `/` | GET | Upload page — drag & drop or browse for X-ray image |
-| `/predict` | POST | Accepts image, runs model inference, returns result |
+| `/predict` | POST | Accepts image, runs model inference, returns result with Grad-CAM |
+| `/history` | GET | View recent prediction history |
+| `/history/clear` | POST | Clear prediction history |
+| `/performance` | GET | Model performance dashboard with metrics and plots |
 | `/about` | GET | Project information and team details |
 
 ---
@@ -194,17 +204,23 @@ Detailed metrics (precision, recall, F1-score) and visualizations are generated 
 
 ---
 
+## Live Demo
+
+**Try it now:** [https://huggingface.co/spaces/anurag2004/lung-disease-prediction](https://huggingface.co/spaces/anurag2004/lung-disease-prediction)
+
+---
+
 ## Deployment
 
-### Render.com
+Deployed on **Hugging Face Spaces** using Docker (16GB RAM, free tier).
 
-1. Push code to GitHub (use Git LFS for the `.keras` model file if >100 MB)
-2. Go to [Render.com](https://render.com) → **New → Web Service**
-3. Connect your GitHub repository
-4. Build command: `pip install -r requirements.txt`
-5. Start command: `gunicorn app:app --bind 0.0.0.0:$PORT --timeout 120`
-6. Python version: 3.10+
-7. Deploy
+Render.com was attempted first but its free tier (512MB RAM) was insufficient for TensorFlow + VGG16 inference.
+
+### To deploy your own:
+1. Fork this repository
+2. Create a new Space on [Hugging Face](https://huggingface.co/new-space) with **Docker SDK**
+3. Push the code to the Space
+4. It builds and deploys automatically
 
 ---
 
