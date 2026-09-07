@@ -126,6 +126,7 @@ git init
 
 ### Step 1.2: Create requirements.txt
 ```
+# Core dependencies for lung disease prediction app
 tensorflow==2.15.0
 flask==3.0.0
 opencv-python-headless==4.9.0.80
