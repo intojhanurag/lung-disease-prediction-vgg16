@@ -228,9 +228,9 @@ Render.com was attempted first but its free tier (512MB RAM) was insufficient fo
 
 | Name | Roll Number |
 |------|-------------|
-| Kanhaiya Kumar Sahani | 2300970130067 |
-| Anurag Kumar Ojha | 2300970130027 |
-| Asad Khan | 2300970130033 |
+| Kanhaiya Kumar Sahani | 2300970130067|
+| Anurag Kumar Ojha | 2300970130027|
+| Asad Khan | 2300970130033|
 
 **Guide:** Mrs. Shanu Verma
 **College:** Galgotias College of Engineering & Technology
