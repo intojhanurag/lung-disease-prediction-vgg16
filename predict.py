@@ -28,6 +28,7 @@ def predict_pneumonia(image_path, model):
     prediction = model.predict(img)[0][0]
 
     # Determine class and confidence
+    # Threshold at 0.5 since sigmoid output represents P(PNEUMONIA)
     if prediction >= 0.5:
         class_label = CLASS_LABELS[1]  # PNEUMONIA
         confidence = prediction * 100
